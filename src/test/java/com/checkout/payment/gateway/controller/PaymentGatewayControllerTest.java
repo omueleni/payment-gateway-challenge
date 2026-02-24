@@ -93,7 +93,8 @@ class PaymentGatewayControllerTest {
 
     mvc.perform(MockMvcRequestBuilders.post("/payment").contentType(MediaType.APPLICATION_JSON)
         .content(body)).andExpect(status().isServiceUnavailable()).andExpect(
-        jsonPath("$.message").value("Bank payment unavailable for card number ends with 0"));
+        jsonPath("$.message").value("Bank payment unavailable for card number ends with 0"))
+        .andExpect(jsonPath("$.status").value("Rejected"));
 
     verify(acquiringBankService, never()).authorise(any());
   }

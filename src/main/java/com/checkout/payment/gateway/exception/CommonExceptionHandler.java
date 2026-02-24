@@ -1,6 +1,8 @@
 package com.checkout.payment.gateway.exception;
 
+import com.checkout.payment.gateway.enums.PaymentStatus;
 import com.checkout.payment.gateway.model.ErrorResponse;
+import com.checkout.payment.gateway.model.ServiceUnavailableResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -27,7 +29,7 @@ public class CommonExceptionHandler {
   public ResponseEntity<ErrorResponse> handleException(ValidationException ex) {
     LOG.error("Exception happened", ex);
 
-    return new ResponseEntity<>( new ErrorResponse(ex.getMessage()),HttpStatus.BAD_REQUEST);
+    return new ResponseEntity<>(new ErrorResponse(ex.getMessage()), HttpStatus.BAD_REQUEST);
   }
 
   @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -45,8 +47,10 @@ public class CommonExceptionHandler {
   }
 
   @ExceptionHandler(ServiceUnavailableException.class)
-  public ResponseEntity<ErrorResponse> handle503(ServiceUnavailableException ex) {
-    return new ResponseEntity<> (new ErrorResponse(ex.getMessage()),HttpStatus.SERVICE_UNAVAILABLE);
+  public ResponseEntity<ServiceUnavailableResponse> handle503(ServiceUnavailableException ex) {
+    return new ResponseEntity<>(
+        new ServiceUnavailableResponse(ex.getMessage(), PaymentStatus.REJECTED.getName()),
+        HttpStatus.SERVICE_UNAVAILABLE);
   }
 
 }
