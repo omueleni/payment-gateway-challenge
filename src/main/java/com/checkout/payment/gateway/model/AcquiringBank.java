@@ -8,11 +8,15 @@ public class AcquiringBank {
       String currency,
       int amount,
       String cvv
-  ) {}
+  ) {
+
+  }
 
   public record BankPaymentResponse(
       boolean authorized,
       String authorization_code
-  ) {}
+  ) {
+
+  }
 
 }

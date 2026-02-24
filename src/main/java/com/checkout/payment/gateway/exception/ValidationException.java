@@ -1,6 +1,6 @@
 package com.checkout.payment.gateway.exception;
 
-public class ValidationException extends  RuntimeException {
+public class ValidationException extends RuntimeException {
 
   private final String field;
 

@@ -4,8 +4,9 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 
 public final class AmountUtil {
+
   public static int toMinorUnits(String amountStr) {
-    try{
+    try {
       BigDecimal amount = new BigDecimal(amountStr.trim());
       if (amount.signum() <= 0) {
         throw new IllegalArgumentException("Amount must be greater than 0");

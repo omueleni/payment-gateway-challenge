@@ -13,19 +13,19 @@ public class AcquiringBankService {
   private final WebClient webClient;
 
   public AcquiringBankService(
-    WebClient.Builder webClientBuilder,
-    @Value("${acquiring.bank.base-url}") String baseUrl
-  ){
+      WebClient.Builder webClientBuilder,
+      @Value("${acquiring.bank.base-url}") String baseUrl
+  ) {
     this.webClient = webClientBuilder.baseUrl(baseUrl).build();
   }
 
   public BankPaymentResponse authorise(BankPaymentRequest request) {
-      return webClient.post()
-          .uri("/payments")
-          .contentType(MediaType.APPLICATION_JSON)
-          .bodyValue(request)
-          .retrieve()
-          .bodyToMono(BankPaymentResponse.class)
-          .block();
+    return webClient.post()
+        .uri("/payments")
+        .contentType(MediaType.APPLICATION_JSON)
+        .bodyValue(request)
+        .retrieve()
+        .bodyToMono(BankPaymentResponse.class)
+        .block();
   }
 }

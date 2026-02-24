@@ -24,7 +24,9 @@ public class PaymentGatewayService {
   private final PaymentRequestValidatorService paymentRequestValidatorService;
 
 
-  public PaymentGatewayService(PaymentsRepository paymentsRepository, AcquiringBankService bankClient, PaymentRequestValidatorService  paymentRequestValidatorService) {
+  public PaymentGatewayService(PaymentsRepository paymentsRepository,
+      AcquiringBankService bankClient,
+      PaymentRequestValidatorService paymentRequestValidatorService) {
     this.paymentsRepository = paymentsRepository;
     this.bankClient = bankClient;
     this.paymentRequestValidatorService = paymentRequestValidatorService;
@@ -47,7 +49,7 @@ public class PaymentGatewayService {
 
     BankPaymentResponse response = bankClient.authorise(buildBankPaymentRequest(paymentRequest));
 
-    PostPaymentResponse postPaymentResponse = getPostPaymentResponse(response,  paymentRequest);
+    PostPaymentResponse postPaymentResponse = getPostPaymentResponse(response, paymentRequest);
 
     paymentsRepository.add(postPaymentResponse);
 
@@ -55,31 +57,32 @@ public class PaymentGatewayService {
   }
 
 
-
   private BankPaymentRequest buildBankPaymentRequest(ProcessPaymentRequest paymentRequest) {
-     return new BankPaymentRequest(
-         paymentRequest.getCardNumber(),
-         formatExpiry(paymentRequest.getExpiryMonth(), paymentRequest.getExpiryYear()),
-         paymentRequest.getCurrency(),
-         getMinorUnits(paymentRequest.getAmount()),
-         paymentRequest.getCvv()
-     );
+    return new BankPaymentRequest(
+        paymentRequest.getCardNumber(),
+        formatExpiry(paymentRequest.getExpiryMonth(), paymentRequest.getExpiryYear()),
+        paymentRequest.getCurrency(),
+        getMinorUnits(paymentRequest.getAmount()),
+        paymentRequest.getCvv()
+    );
   }
 
-  private PostPaymentResponse getPostPaymentResponse(BankPaymentResponse bankPaymentResponse, ProcessPaymentRequest paymentRequest) {
+  private PostPaymentResponse getPostPaymentResponse(BankPaymentResponse bankPaymentResponse,
+      ProcessPaymentRequest paymentRequest) {
 
     String paymentId = bankPaymentResponse.authorized()
         ? bankPaymentResponse.authorization_code()
         : UUID.randomUUID().toString();
-    PaymentStatus paymentStatus = bankPaymentResponse.authorized() ? PaymentStatus.AUTHORIZED : PaymentStatus.DECLINED;
+    PaymentStatus paymentStatus =
+        bankPaymentResponse.authorized() ? PaymentStatus.AUTHORIZED : PaymentStatus.DECLINED;
     PostPaymentResponse postPaymentResponse = new PostPaymentResponse();
-        postPaymentResponse.setId(UUID.fromString(paymentId));
-        postPaymentResponse.setStatus(paymentStatus);
-        postPaymentResponse.setCardNumberLastFour(maskCard(paymentRequest.getCardNumber()));
-        postPaymentResponse.setExpiryMonth(paymentRequest.getExpiryMonth());
-        postPaymentResponse.setExpiryYear(paymentRequest.getExpiryYear());
-        postPaymentResponse.setCurrency(paymentRequest.getCurrency());
-        postPaymentResponse.setAmount(getMinorUnits(paymentRequest.getAmount()));
+    postPaymentResponse.setId(UUID.fromString(paymentId));
+    postPaymentResponse.setStatus(paymentStatus);
+    postPaymentResponse.setCardNumberLastFour(maskCard(paymentRequest.getCardNumber()));
+    postPaymentResponse.setExpiryMonth(paymentRequest.getExpiryMonth());
+    postPaymentResponse.setExpiryYear(paymentRequest.getExpiryYear());
+    postPaymentResponse.setCurrency(paymentRequest.getCurrency());
+    postPaymentResponse.setAmount(getMinorUnits(paymentRequest.getAmount()));
     return postPaymentResponse;
   }
 

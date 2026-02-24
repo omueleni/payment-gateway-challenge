@@ -7,6 +7,7 @@ import jakarta.validation.constraints.Positive;
 import java.io.Serializable;
 
 public class ProcessPaymentRequest implements Serializable {
+
   @NotBlank(message = "minimum 14 digit card number required")
   @JsonProperty("card_number")
   private String cardNumber;
