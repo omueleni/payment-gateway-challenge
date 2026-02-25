@@ -43,8 +43,6 @@ public class PaymentGatewayService {
 
     paymentRequestValidatorService.validate(paymentRequest);
 
-    int amountMinor = AmountUtil.toMinorUnits(paymentRequest.getAmount());
-
     LOG.info("Calling acquiring bank with request {}", paymentRequest);
 
     BankPaymentResponse response = bankClient.authorise(buildBankPaymentRequest(paymentRequest));

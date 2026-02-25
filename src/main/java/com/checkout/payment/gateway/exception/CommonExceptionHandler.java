@@ -53,4 +53,12 @@ public class CommonExceptionHandler {
         HttpStatus.SERVICE_UNAVAILABLE);
   }
 
+  @ExceptionHandler(AmountArgumentException.class)
+  public ResponseEntity<ErrorResponse> handleAmountArgument(AmountArgumentException ex) {
+    return new ResponseEntity<>(
+        new ErrorResponse(ex.getMessage()),
+        HttpStatus.BAD_REQUEST);
+  }
+
+
 }

@@ -313,4 +313,37 @@ class PaymentGatewayControllerTest {
         .andExpect(jsonPath("$.cardNumber").value("minimum 14 digit card number required"));
   }
 
+  @Test
+  void whenPaymentAmountIsInvalidThenReturnBadRequest() throws Exception {
+    ObjectNode json = basePayload();
+    json.put("amount", "$10.78");
+    String body = json.toString();
+
+    mvc.perform(MockMvcRequestBuilders.post("/payment").contentType(MediaType.APPLICATION_JSON)
+            .content(body)).andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$.message").value("Amount must be a valid number [i.e. 0.01 , 10, 10.60]"));
+  }
+
+  @Test
+  void whenPaymentAmountScaleIsInvalidThenReturnBadRequest() throws Exception {
+    ObjectNode json = basePayload();
+    json.put("amount", "10.780");
+    String body = json.toString();
+
+    mvc.perform(MockMvcRequestBuilders.post("/payment").contentType(MediaType.APPLICATION_JSON)
+            .content(body)).andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$.message").value("Amount must have max 2 decimal places"));
+  }
+
+  @Test
+  void whenPaymentAmountZeroThenReturnBadRequest() throws Exception {
+    ObjectNode json = basePayload();
+    json.put("amount", "0.00");
+    String body = json.toString();
+
+    mvc.perform(MockMvcRequestBuilders.post("/payment").contentType(MediaType.APPLICATION_JSON)
+            .content(body)).andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$.message").value("Amount must be greater than 0"));
+  }
+
 }
